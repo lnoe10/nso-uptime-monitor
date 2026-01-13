@@ -90,7 +90,9 @@ async function checkSite(site, retryCount = 0) {
     clearTimeout(timeout);
     
     const responseTime = Date.now() - startTime;
-    const isUp = response.status >= 200 && response.status < 400;
+    
+    // Count 2xx, 3xx as up, and also 403 (bot protection indicates a working site)
+    const isUp = (response.status >= 200 && response.status < 400) || response.status === 403;
     
     return {
       site_id: site.id,
