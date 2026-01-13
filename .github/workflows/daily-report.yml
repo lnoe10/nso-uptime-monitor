@@ -1,0 +1,67 @@
+name: Daily Uptime Report
+
+on:
+  schedule:
+    # Run daily at 8:00 AM UTC
+    - cron: '0 8 * * *'
+  
+  workflow_dispatch:
+
+jobs:
+  generate-report:
+    name: Generate Daily Report
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate report
+        id: report
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          node scripts/generate-report.js > report.md
+          echo "report_date=$(date -u +%Y-%m-%d)" >> $GITHUB_OUTPUT
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-report-${{ steps.report.outputs.report_date }}
+          path: report.md
+          retention-days: 30
+
+  # Optional: Cleanup old data
+  cleanup:
+    name: Cleanup Old Data
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run cleanup
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          RETENTION_DAYS: '90'
+        run: node scripts/cleanup.js

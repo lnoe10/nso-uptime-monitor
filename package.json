@@ -1,0 +1,37 @@
+{
+  "name": "nso-uptime-monitor",
+  "version": "1.0.0",
+  "description": "Uptime monitoring for National Statistical Office websites worldwide",
+  "main": "src/checker.js",
+  "scripts": {
+    "check": "node src/checker.js",
+    "import-sites": "node scripts/import-sites.js",
+    "report": "node scripts/generate-report.js",
+    "cleanup": "node scripts/cleanup.js",
+    "dev": "cd dashboard && npm run dev",
+    "build": "cd dashboard && npm run build",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opendatawatch/nso-uptime-monitor"
+  },
+  "keywords": [
+    "uptime",
+    "monitoring",
+    "nso",
+    "statistics",
+    "open-data"
+  ],
+  "author": "Open Data Watch",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
