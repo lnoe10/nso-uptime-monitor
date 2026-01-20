@@ -1,0 +1,35 @@
+name: UptimeRobot Sync
+
+on:
+  schedule:
+    # Run every hour at minute 30 (offset from main checker at minute 0)
+    - cron: '30 * * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: Sync UptimeRobot Data
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync UptimeRobot data
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          UPTIMEROBOT_API_KEY: ${{ secrets.UPTIMEROBOT_API_KEY }}
+        run: node src/uptimerobot-sync.js
