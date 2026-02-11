@@ -133,14 +133,22 @@ export default function App() {
     try {
       const { data: statusData, error: statusError } = await supabase
         .from('site_status_detailed')
-        .select('id, country, country_code, region, organization, url, current_status, uptime_7d, uptime_24h, notes')
+        .select('id, country, country_code, region, organization, url, current_status, last_checked, uptime_7d, uptime_24h, notes')
         .order('country');
       if (statusError) throw statusError;
       const { data: historyData, error: historyError } = await supabase.rpc('get_weekly_history', { weeks_back: 12 });
       if (historyError) throw historyError;
       const historyBySite = {};
       historyData?.forEach(row => { if (!historyBySite[row.site_id]) historyBySite[row.site_id] = []; historyBySite[row.site_id].push(row); });
-      setSites(statusData || []); setWeeklyHistory(historyBySite); setLastUpdated(new Date());
+
+      // Find the most recent check timestamp across all sites
+      const mostRecentCheck = statusData?.reduce((latest, site) => {
+        if (!site.last_checked) return latest;
+        const checked = new Date(site.last_checked);
+        return !latest || checked > latest ? checked : latest;
+      }, null);
+
+      setSites(statusData || []); setWeeklyHistory(historyBySite); setLastUpdated(mostRecentCheck);
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   };
 
