@@ -131,7 +131,10 @@ export default function App() {
     if (!supabase) { setError('Supabase not configured'); setLoading(false); return; }
     setLoading(true); setError(null);
     try {
-      const { data: statusData, error: statusError } = await supabase.from('site_status_detailed').select('*').order('country');
+      const { data: statusData, error: statusError } = await supabase
+        .from('site_status_detailed')
+        .select('id, country, country_code, region, organization, url, current_status, uptime_7d, uptime_24h, notes')
+        .order('country');
       if (statusError) throw statusError;
       const { data: historyData, error: historyError } = await supabase.rpc('get_weekly_history', { weeks_back: 12 });
       if (historyError) throw historyError;

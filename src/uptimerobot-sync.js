@@ -9,24 +9,15 @@
  *   SUPABASE_URL=xxx SUPABASE_SERVICE_KEY=xxx UPTIMEROBOT_API_KEY=xxx node src/uptimerobot-sync.js
  */
 
-const { createClient } = require('@supabase/supabase-js');
+const { supabase } = require('./supabase');
 
-// Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+// UptimeRobot API key
 const uptimeRobotApiKey = process.env.UPTIMEROBOT_API_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Error: SUPABASE_URL and SUPABASE_SERVICE_KEY are required');
-  process.exit(1);
-}
 
 if (!uptimeRobotApiKey) {
   console.error('Error: UPTIMEROBOT_API_KEY is required');
   process.exit(1);
 }
-
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Mapping of UptimeRobot friendly names to country codes
 // UptimeRobot monitor names should match these keys

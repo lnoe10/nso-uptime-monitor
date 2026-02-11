@@ -5,18 +5,9 @@
  * Run daily via GitHub Actions to keep database size manageable.
  */
 
-const { createClient } = require('@supabase/supabase-js');
+const { supabase } = require('../src/supabase');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const retentionDays = parseInt(process.env.RETENTION_DAYS) || 90;
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Error: SUPABASE_URL and SUPABASE_SERVICE_KEY required');
-  process.exit(1);
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function cleanup() {
   console.log('═'.repeat(60));

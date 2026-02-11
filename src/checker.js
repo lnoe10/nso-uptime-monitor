@@ -8,7 +8,7 @@
  *   SUPABASE_URL=xxx SUPABASE_SERVICE_KEY=xxx node src/checker.js
  */
 
-const { createClient } = require('@supabase/supabase-js');
+const { supabase } = require('./supabase');
 const fs = require('fs');
 const path = require('path');
 
@@ -16,31 +16,20 @@ const path = require('path');
 const config = {
   // Request timeout in milliseconds
   checkTimeout: parseInt(process.env.CHECK_TIMEOUT) || 30000,
-  
+
   // Number of concurrent checks
   batchSize: parseInt(process.env.BATCH_SIZE) || 10,
-  
+
   // Delay between batches (ms) - be nice to servers
   batchDelay: parseInt(process.env.BATCH_DELAY) || 1000,
-  
+
   // User agent for requests
   userAgent: process.env.USER_AGENT || 'NSO-Uptime-Monitor/1.0 (https://opendatawatch.com; contact@opendatawatch.com)',
-  
+
   // Retry failed checks
   maxRetries: parseInt(process.env.MAX_RETRIES) || 1,
   retryDelay: parseInt(process.env.RETRY_DELAY) || 5000,
 };
-
-// Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Error: SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables are required');
-  process.exit(1);
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Ensure logs directory exists
 const logsDir = path.join(__dirname, '..', 'logs');

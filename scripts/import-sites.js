@@ -8,24 +8,9 @@
  *   npm run import-sites -- --file custom-sites.csv
  */
 
-const { createClient } = require('@supabase/supabase-js');
+const { supabase } = require('../src/supabase');
 const fs = require('fs');
 const path = require('path');
-
-// Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Error: SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables are required');
-  console.error('');
-  console.error('Set them in your environment or create a .env file:');
-  console.error('  SUPABASE_URL=https://your-project.supabase.co');
-  console.error('  SUPABASE_SERVICE_KEY=your-service-key');
-  process.exit(1);
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 /**
  * Parse CSV file
@@ -239,12 +224,27 @@ async function importSites(csvPath) {
 
 // Get CSV path from arguments or use default
 const args = process.argv.slice(2);
-let csvPath = path.join(__dirname, '..', 'data', 'nso-sites.csv');
+const dataDir = path.resolve(__dirname, '..', 'data');
+let csvPath = path.join(dataDir, 'nso-sites.csv');
 
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--file' && args[i + 1]) {
-    csvPath = args[i + 1];
+    csvPath = path.resolve(args[i + 1]);
   }
+}
+
+// Security: Validate that the path is within the data directory
+if (!csvPath.startsWith(dataDir)) {
+  console.error('Error: CSV file must be located in the data/ directory');
+  console.error(`  Allowed directory: ${dataDir}`);
+  console.error(`  Requested path: ${csvPath}`);
+  process.exit(1);
+}
+
+// Security: Validate file extension
+if (!csvPath.toLowerCase().endsWith('.csv')) {
+  console.error('Error: File must have a .csv extension');
+  process.exit(1);
 }
 
 // Run
