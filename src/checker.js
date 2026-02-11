@@ -11,6 +11,7 @@
 const { supabase } = require('./supabase');
 const fs = require('fs');
 const path = require('path');
+const { isRetryableError, formatError } = require('./utils/errors');
 
 // Configuration
 const config = {
@@ -31,11 +32,8 @@ const config = {
   retryDelay: parseInt(process.env.RETRY_DELAY) || 5000,
 };
 
-// Ensure logs directory exists
+// Logs directory (created when needed)
 const logsDir = path.join(__dirname, '..', 'logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir, { recursive: true });
-}
 
 /**
  * Check if a single site is accessible
@@ -111,32 +109,6 @@ async function checkSite(site, retryCount = 0) {
       check_type: 'scheduled',
     };
   }
-}
-
-/**
- * Check if error is retryable
- */
-function isRetryableError(error) {
-  const retryableErrors = [
-    'ECONNRESET',
-    'ETIMEDOUT',
-    'ENOTFOUND',
-    'EAI_AGAIN',
-    'ECONNREFUSED',
-  ];
-  return retryableErrors.some(code => error.message?.includes(code));
-}
-
-/**
- * Format error message for storage
- */
-function formatError(error) {
-  if (error.name === 'AbortError') {
-    return 'Request timeout';
-  }
-  // Truncate long error messages
-  const msg = error.message || error.toString();
-  return msg.substring(0, 255);
 }
 
 /**
@@ -251,7 +223,12 @@ async function main() {
   console.log('NSO Uptime Monitor');
   console.log(`Started at: ${new Date().toISOString()}`);
   console.log('═'.repeat(60));
-  
+
+  // Ensure logs directory exists
+  if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir, { recursive: true });
+  }
+
   try {
     // Fetch all active sites
     console.log('\nFetching sites from database...');
@@ -327,5 +304,7 @@ async function main() {
   }
 }
 
-// Run
-main();
+// Run if executed directly (not imported as module)
+if (require.main === module) {
+  main();
+}

@@ -10,7 +10,16 @@
     "cleanup": "node scripts/cleanup.js",
     "dev": "cd dashboard && npm run dev",
     "build": "cd dashboard && npm run build",
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/utils/**/*.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -29,7 +38,8 @@
     "@supabase/supabase-js": "^2.39.0"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "jest": "^30.2.0"
   },
   "engines": {
     "node": ">=18.0.0"
