@@ -35,6 +35,7 @@ const config = {
 
 // Hosts that require SSL certificate verification bypass
 const SSL_BYPASS_HOSTS = new Set([
+  'nsia.gov.af',         // Afghanistan - SSL error + SPA (root URL returns 200)
   'www.knbs.or.ke',      // Kenya - UNABLE_TO_VERIFY_LEAF_SIGNATURE
   'www.lisgis.gov.lr',   // Liberia - ERR_TLS_CERT_ALTNAME_INVALID
   '1212.mn',             // Mongolia - UNABLE_TO_VERIFY_LEAF_SIGNATURE
