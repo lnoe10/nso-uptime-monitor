@@ -13,6 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const { Agent } = require('undici');
 const { isRetryableError, formatError } = require('./utils/errors');
+const { recheckWithBrowser, needsBrowserCheck } = require('./browser-check');
 
 // Configuration
 const config = {
@@ -304,21 +305,31 @@ async function main() {
       bypassSites.forEach(s => console.log(`  → ${s.country}: ${s.url}`));
     }
 
+    // Log browser check hosts
+    const browserSites = sites.filter(s => needsBrowserCheck(s.url));
+    if (browserSites.length > 0) {
+      console.log(`\nBrowser check enabled for ${browserSites.length} sites:`);
+      browserSites.forEach(s => console.log(`  → ${s.country}: ${s.url}`));
+    }
+
     // Run checks
     const results = await checkAllSites(sites);
     
+    // Re-check bot-protected sites with headless browser
+    const finalResults = await recheckWithBrowser(results, sites);
+
     // Insert results into database
     console.log('Saving results to database...');
     const { error: insertError } = await supabase
       .from('uptime_checks')
-      .insert(results);
-    
+      .insert(finalResults);
+
     if (insertError) {
       throw new Error(`Failed to save results: ${insertError.message}`);
     }
-    
+
     // Generate and display summary
-    const summary = generateSummary(results, sites);
+    const summary = generateSummary(finalResults, sites);
     
     console.log('\n' + '═'.repeat(60));
     console.log('SUMMARY');
