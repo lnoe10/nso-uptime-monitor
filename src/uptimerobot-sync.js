@@ -22,7 +22,7 @@ if (!uptimeRobotApiKey) {
 // Mapping of UptimeRobot friendly names to country codes
 // UptimeRobot monitor names should match these keys
 const MONITOR_NAME_TO_COUNTRY_CODE = {
-  'Afghanistan': 'AFG',
+  // Afghanistan — now handled by SSL bypass in fetch checker
   'Angola': 'AGO',
   'Armenia': 'ARM',
   // Bosnia, Guyana, Portugal — now handled by Playwright browser check
