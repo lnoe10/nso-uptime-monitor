@@ -11,6 +11,7 @@
 const { supabase } = require('./supabase');
 const fs = require('fs');
 const path = require('path');
+const { Agent } = require('undici');
 const { isRetryableError, formatError } = require('./utils/errors');
 
 // Configuration
@@ -31,6 +32,28 @@ const config = {
   maxRetries: parseInt(process.env.MAX_RETRIES) || 1,
   retryDelay: parseInt(process.env.RETRY_DELAY) || 5000,
 };
+
+// Hosts that require SSL certificate verification bypass
+const SSL_BYPASS_HOSTS = new Set([
+  'www.knbs.or.ke',      // Kenya - UNABLE_TO_VERIFY_LEAF_SIGNATURE
+  'www.lisgis.gov.lr',   // Liberia - ERR_TLS_CERT_ALTNAME_INVALID
+  '1212.mn',             // Mongolia - UNABLE_TO_VERIFY_LEAF_SIGNATURE
+  'www.ine.gov.mz',      // Mozambique - UNABLE_TO_VERIFY_LEAF_SIGNATURE
+  'rosstat.gov.ru',      // Russia - UNABLE_TO_VERIFY_LEAF_SIGNATURE
+  'www.nso.gov.vn',      // Vietnam - UNABLE_TO_VERIFY_LEAF_SIGNATURE
+]);
+
+const insecureDispatcher = new Agent({
+  connect: { rejectUnauthorized: false },
+});
+
+function getDispatcher(url) {
+  try {
+    return SSL_BYPASS_HOSTS.has(new URL(url).hostname) ? insecureDispatcher : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 // Logs directory (created when needed)
 const logsDir = path.join(__dirname, '..', 'logs');
@@ -56,6 +79,7 @@ async function checkSite(site, retryCount = 0) {
           'Accept': 'text/html,application/xhtml+xml',
         },
         redirect: 'follow',
+        dispatcher: getDispatcher(site.url),
       });
     } catch (headError) {
       // Some servers don't support HEAD, try GET
@@ -68,6 +92,7 @@ async function checkSite(site, retryCount = 0) {
             'Accept': 'text/html,application/xhtml+xml',
           },
           redirect: 'follow',
+          dispatcher: getDispatcher(site.url),
         });
       } else {
         throw headError;
@@ -80,7 +105,25 @@ async function checkSite(site, retryCount = 0) {
     
     // Count 2xx, 3xx as up, and also 403 (bot protection indicates a working site)
     const isUp = (response.status >= 200 && response.status < 400) || response.status === 403;
-    
+
+    // If SSL bypass was used and the site is up, probe with normal SSL to detect fixed certs
+    if (isUp && getDispatcher(site.url)) {
+      try {
+        const probeController = new AbortController();
+        const probeTimeout = setTimeout(() => probeController.abort(), 10000);
+        await fetch(site.url, {
+          method: 'HEAD',
+          signal: probeController.signal,
+          headers: { 'User-Agent': config.userAgent },
+          redirect: 'follow',
+        });
+        clearTimeout(probeTimeout);
+        console.log(`  ℹ [SSL bypass] ${site.country} — certificate now valid, bypass may be removable`);
+      } catch {
+        // SSL still broken — bypass is still needed, nothing to report
+      }
+    }
+
     return {
       site_id: site.id,
       status_code: response.status,
@@ -140,7 +183,8 @@ async function checkAllSites(sites) {
         const result = await checkSite(site);
         const status = result.is_up ? '✓' : '✗';
         const time = result.response_time_ms ? `${result.response_time_ms}ms` : 'N/A';
-        console.log(`  ${status} ${site.country} (${time})`);
+        const sslTag = getDispatcher(site.url) ? ' [SSL bypass]' : '';
+        console.log(`  ${status} ${site.country} (${time})${sslTag}`);
         return result;
       })
     );
@@ -249,7 +293,16 @@ async function main() {
     }
     
     console.log(`Found ${sites.length} active sites.`);
-    
+
+    // Log SSL bypass hosts
+    const bypassSites = sites.filter(s => {
+      try { return SSL_BYPASS_HOSTS.has(new URL(s.url).hostname); } catch { return false; }
+    });
+    if (bypassSites.length > 0) {
+      console.log(`\nSSL bypass enabled for ${bypassSites.length} sites:`);
+      bypassSites.forEach(s => console.log(`  → ${s.country}: ${s.url}`));
+    }
+
     // Run checks
     const results = await checkAllSites(sites);
     
