@@ -11,6 +11,11 @@ const BROWSER_CHECK_HOSTS = new Set([
   'bhas.gov.ba',            // Bosnia - bot protection / captcha
   'www.ine.pt',             // Portugal - access denied
   'statisticsguyana.gov.gy', // Guyana - bot protection
+  'www.armstat.am',         // Armenia - bot protection
+  'ask.rks-gov.net',        // Kosovo - bot protection
+  'www.csb.gov.kw',         // Kuwait - bot protection
+  'insse.ro',               // Romania - bot protection
+  'www.statistics.gov.rw',  // Rwanda - bot protection
 ]);
 
 /**

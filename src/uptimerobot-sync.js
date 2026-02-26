@@ -24,12 +24,8 @@ if (!uptimeRobotApiKey) {
 const MONITOR_NAME_TO_COUNTRY_CODE = {
   // Afghanistan — now handled by SSL bypass in fetch checker
   'Angola': 'AGO',
-  'Armenia': 'ARM',
-  // Bosnia, Guyana, Portugal — now handled by Playwright browser check
+  // Armenia, Bosnia, Guyana, Kosovo, Kuwait, Portugal, Romania — now handled by Playwright browser check
   'Iran': 'IRN',
-  'Kosovo': 'XKX',
-  'Kuwait': 'KWT',
-  'Romania': 'ROU',
   'San Marino': 'SMR',
   'Syria': 'SYR',
   'Ukraine': 'UKR',
