@@ -136,7 +136,7 @@ export default function App() {
         .select('id, country, country_code, region, organization, url, current_status, last_checked, uptime_7d, uptime_24h, notes')
         .order('country');
       if (statusError) throw statusError;
-      const { data: historyData, error: historyError } = await supabase.rpc('get_weekly_history', { weeks_back: 12 });
+      const { data: historyData, error: historyError } = await supabase.rpc('get_weekly_history', { weeks_back: 12 }).limit(3000);
       if (historyError) throw historyError;
       const historyBySite = {};
       historyData?.forEach(row => { if (!historyBySite[row.site_id]) historyBySite[row.site_id] = []; historyBySite[row.site_id].push(row); });
