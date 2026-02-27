@@ -16,6 +16,11 @@ const BROWSER_CHECK_HOSTS = new Set([
   'www.csb.gov.kw',         // Kuwait - bot protection
   'insse.ro',               // Romania - bot protection
   'www.statistics.gov.rw',  // Rwanda - bot protection
+  'www.ons.dz',             // Algeria - bot protection
+  'statistics.gov.ag',      // Antigua and Barbuda - bot protection
+  'www.ansd.sn',            // Senegal - bot protection
+  'www.statistics.gov.sb',  // Solomon Islands - bot protection
+  'vbos.gov.vu',            // Vanuatu - bot protection
 ]);
 
 /**

@@ -24,14 +24,12 @@ if (!uptimeRobotApiKey) {
 const MONITOR_NAME_TO_COUNTRY_CODE = {
   // Afghanistan — now handled by SSL bypass in fetch checker
   'Angola': 'AGO',
-  // Armenia, Bosnia, Guyana, Kosovo, Kuwait, Portugal, Romania — now handled by Playwright browser check
+  // Armenia, Bosnia, Guyana, Kosovo, Kuwait, Portugal, Romania,
+  // Algeria, Antigua & Barbuda, Senegal, Solomon Islands, Vanuatu — now handled by Playwright browser check
   'Iran': 'IRN',
   'San Marino': 'SMR',
   'Syria': 'SYR',
   'Ukraine': 'UKR',
-  'Algeria': 'DZA',
-  'Antigua & Barbuda': 'ATG',
-  'Antigua and Barbuda': 'ATG',
   'China': 'CHN',
   'Kenya': 'KEN',
   'Lebanon': 'LBN',
@@ -41,9 +39,6 @@ const MONITOR_NAME_TO_COUNTRY_CODE = {
   'Mozambique': 'MOZ',
   'Qatar': 'QAT',
   'Russia': 'RUS',
-  'Senegal': 'SEN',
-  'Solomon Islands': 'SLB',
-  'Vanuatu': 'VUT',
   'Vietnam': 'VNM',
 };
 
