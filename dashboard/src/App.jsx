@@ -377,7 +377,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
               <div>Organization</div>
               <div>Status</div>
               <div>12-Week History</div>
-              <div style={{ textAlign: 'right' }}>Uptime</div>
+              <div style={{ textAlign: 'right' }}>7D Uptime</div>
               <div>Notes</div>
             </div>
 
