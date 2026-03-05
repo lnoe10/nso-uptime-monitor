@@ -1,12 +1,12 @@
 # NSO Uptime Monitor — Claude Project Context
 
 ## What This Project Does
-Monitors availability of ~196 National Statistical Office (NSO) websites worldwide. Checks run hourly via GitHub Actions, results stored in Supabase, displayed on a React dashboard.
+Monitors availability of 198 National Statistical Office (NSO) websites worldwide. Checks run hourly via GitHub Actions, results stored in Supabase, displayed on a React dashboard.
 
 ## Architecture
 
 ### Three-Pass Checking System
-1. **Fetch checker** (`src/checker.js`) — runs hourly at minute 0, checks all ~196 sites via HTTP fetch
+1. **Fetch checker** (`src/checker.js`) — runs hourly at minute 0, checks all 198 sites via HTTP fetch
 2. **Playwright browser fallback** (`src/browser-check.js`) — immediately after fetch pass, re-checks 15 bot-protected sites using headless Chromium
 3. **UptimeRobot sync** (`src/uptimerobot-sync.js`) — runs at minute 30, syncs results for 2 sites that block all datacenter IPs
 
