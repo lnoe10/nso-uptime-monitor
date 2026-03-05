@@ -40,7 +40,7 @@ const MONITOR_NAME_TO_COUNTRY_CODE = {
   'Mongolia': 'MNG',
   'Mozambique': 'MOZ',
   'Qatar': 'QAT',
-  'Russia': 'RUS',
+  // Russia — now handled by Playwright browser check (SSL bypass + bot protection)
   'Vietnam': 'VNM',
 };
 
