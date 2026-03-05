@@ -28,6 +28,7 @@ Brunei,BRN,Asia,Department of Economic Planning and Statistics,https://deps.mofe
 Bulgaria,BGR,Europe,National Statistical Institute,http://www.nsi.bg
 Burkina Faso,BFA,Africa,Institut National de la Statistique et de la Démographie (INSD),https://www.insd.bf/
 Burundi,BDI,Africa,Institute of Statistics & Economic Studies of Burundi (ISTEEBU),https://www.insbu.bi/
+Côte d'Ivoire,CIV,Africa,Institut National de la Statistique,http://www.ins.ci/
 Cabo Verde,CPV,Africa,Instituto Nacional de Estadistica (INE),https://ine.cv
 Cambodia,KHM,Asia,National Institute of Statistics,http://www.nis.gov.kh
 Cameroon,CMR,Africa,Institut National de la Statistique (INS),https://ins-cameroun.cm/
@@ -42,7 +43,6 @@ Comoros,COM,Africa,National Institute of Statistics and Economic and Demographic
 "Congo, Rep.",COG,Africa,Institut National de la Statistique,https://ins-congo.cg/
 Cook Islands,COK,Oceania,Cook Islands Statistics Office,https://stats.gov.ck/
 Costa Rica,CRI,Americas,National Institute of Statistics and Census,https://inec.cr/
-Côte d'Ivoire,CIV,Africa,Institut National de la Statistique,http://www.ins.ci/
 Croatia,HRV,Europe,Croatian Bureau of Statistics,http://www.dzs.hr
 Cuba,CUB,Americas,Oficina Nacional de Estadísticas e Información (ONEI),http://www.onei.gob.cu/
 Cyprus,CYP,Europe,Statistical Service of Cyprus,http://www.cystat.gov.cy
@@ -57,6 +57,7 @@ El Salvador,SLV,Americas,Oficina Nacional de Estadística y Censos (ONEC),https:
 Equatorial Guinea,GNQ,Africa,National Statistical Institute of Equatorial Guinea,https://inege.org/
 Estonia,EST,Europe,Statistics Estonia,https://www.stat.ee/
 Eswatini,SWZ,Africa,The Central Statistical Office,https://www.gov.sz/
+Ethiopia,ETH,Africa,Ethiopian Statistical Service,https://ess.gov.et
 Fiji,FJI,Oceania,Fiji Bureau of Statistics,http://www.statsfiji.gov.fj
 Finland,FIN,Europe,Statistics Finland,http://www.stat.fi
 France,FRA,Europe,National Institute of Statistics and Economic Studies (INSEE),http://www.insee.fr
@@ -138,6 +139,7 @@ Palau,PLW,Oceania,Palau Gov Statistics,https://www.palaugov.pw/statistics/
 Palestine,PSE,Asia,Palestinian Central Bureau of Statistics,https://www.pcbs.gov.ps/
 Panama,PAN,Americas,National Institute of Statistics and Census,https://www.inec.gob.pa/
 Papua New Guinea,PNG,Oceania,National Statistical Office of Papua New Guinea,http://www.nso.gov.pg
+Paraguay,PRY,Americas,Instituto Nacional de Estad�stica,https://www.ine.gov.py
 Peru,PER,Americas,National Institute of Statistics & Informatics (INEI),https://www.inei.gob.pe/
 Philippines,PHL,Asia,Philippine Statistics Authority,https://psa.gov.ph
 Poland,POL,Europe,Central Statistical Office,http://www.stat.gov.pl
@@ -146,9 +148,9 @@ Qatar,QAT,Asia,Planning and Statistics Authority,https://www.psa.gov.qa/
 Romania,ROU,Europe,National Institute of Statistics,https://insse.ro
 Russia,RUS,Europe,Federal State Statistics Service,https://rosstat.gov.ru/
 Rwanda,RWA,Africa,National Institute of Statistics of Rwanda,https://www.statistics.gov.rw/
+São Tomé and Príncipe,STP,Africa,Instituto Nacional de Estatisticas,https://www.ine.st/
 Samoa,WSM,Oceania,Samoa Bureau of Statistics,http://www.sbs.gov.ws
 San Marino,SMR,Europe,"Office of Economic Planning, Data Processing and Statistics",https://www.statistica.sm
-São Tomé and Príncipe,STP,Africa,Instituto Nacional de Estatisticas,https://www.ine.st/
 Saudi Arabia,SAU,Asia,General Authority for Statistics,https://www.stats.gov.sa/
 Senegal,SEN,Africa,Agence Nationale de la Statistique de la Demographie,http://www.ansd.sn/
 Serbia,SRB,Europe,Statistical Office of the Republic of Serbia,http://www.stat.gov.rs/
@@ -164,6 +166,7 @@ South Sudan,SSD,Africa,National Bureau of Statistics,https://nbs.gov.ss/
 Spain,ESP,Europe,Instituto Nacional de Estadística,http://www.ine.es
 Sri Lanka,LKA,Asia,Department of Census and Statistics,http://www.statistics.gov.lk/
 St. Kitts and Nevis,KNA,Americas,"Department of Statistics, Ministry of Sustainable Development",https://www.stats.gov.kn/
+St. Lucia,LCA,Americas,Government of Saint Lucia Statistics Department,https://stats.gov.lc
 St. Vincent and the Grenadines,VCT,Americas,Statistical Office,http://stats.gov.vc
 Suriname,SUR,Americas,Bureau of Statistics,https://statistics-suriname.org
 Sweden,SWE,Europe,Statistics Sweden,http://www.scb.se
