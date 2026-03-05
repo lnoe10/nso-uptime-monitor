@@ -21,6 +21,7 @@ const BROWSER_CHECK_HOSTS = new Set([
   'vbos.gov.vu',            // Vanuatu - bot protection
   'www.ine.gov.ao',         // Angola - bot protection
   'stats.gov.ck',           // Cook Islands - bot protection
+  'www.ubos.org',           // Uganda - slow load, bot protection
 ]);
 
 /**
