@@ -14,7 +14,6 @@ const BROWSER_CHECK_HOSTS = new Set([
   'www.armstat.am',         // Armenia - bot protection
   'ask.rks-gov.net',        // Kosovo - bot protection
   'www.csb.gov.kw',         // Kuwait - bot protection
-  'insse.ro',               // Romania - bot protection
   'www.statistics.gov.rw',  // Rwanda - bot protection
   'statistics.gov.ag',      // Antigua and Barbuda - bot protection
   'www.ansd.sn',            // Senegal - bot protection

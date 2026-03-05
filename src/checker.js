@@ -45,6 +45,12 @@ const SSL_BYPASS_HOSTS = new Set([
   'www.nso.gov.vn',      // Vietnam - UNABLE_TO_VERIFY_LEAF_SIGNATURE
 ]);
 
+// Hosts monitored exclusively by UptimeRobot — skip DB insert to avoid overwriting their results
+const UPTIMEROBOT_ONLY_HOSTS = new Set([
+  'www.ons.dz',  // Algeria - returns HTTP 500 to headless browsers
+  'insse.ro',    // Romania - drops connections from GitHub's IP range
+]);
+
 const insecureDispatcher = new Agent({
   connect: { rejectUnauthorized: false },
 });
@@ -318,18 +324,24 @@ async function main() {
     // Re-check bot-protected sites with headless browser
     const finalResults = await recheckWithBrowser(results, sites);
 
+    // Exclude sites handled exclusively by UptimeRobot
+    const resultsToInsert = finalResults.filter(r => {
+      const site = sites.find(s => s.id === r.site_id);
+      try { return !UPTIMEROBOT_ONLY_HOSTS.has(new URL(site?.url).hostname); } catch { return true; }
+    });
+
     // Insert results into database
     console.log('Saving results to database...');
     const { error: insertError } = await supabase
       .from('uptime_checks')
-      .insert(finalResults);
+      .insert(resultsToInsert);
 
     if (insertError) {
       throw new Error(`Failed to save results: ${insertError.message}`);
     }
 
     // Generate and display summary
-    const summary = generateSummary(finalResults, sites);
+    const summary = generateSummary(resultsToInsert, sites);
     
     console.log('\n' + '═'.repeat(60));
     console.log('SUMMARY');
