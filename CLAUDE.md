@@ -25,6 +25,14 @@ Monitors availability of ~196 National Statistical Office (NSO) websites worldwi
 | `.github/workflows/uptime-check.yml` | Hourly check workflow (includes Playwright Chromium install + cache) |
 | `.github/workflows/uptimerobot-sync.yml` | UptimeRobot sync workflow |
 | `data/nso-sites.csv` | Source of truth for site URLs and metadata |
+| `scripts/import-sites.js` | Syncs CSV into Supabase `nso_sites` table (`npm run import-sites`) |
+
+## Adding / Updating Countries
+1. Edit `data/nso-sites.csv` (source of truth)
+2. Run `SUPABASE_URL=xxx SUPABASE_SERVICE_KEY=xxx npm run import-sites` — upserts on URL, safe to run against full CSV
+3. The checker reads from the Supabase `nso_sites` table, not the CSV directly
+
+> **Note:** The import upserts on `url`. If you change a URL in the CSV, the old URL row remains in Supabase and must be manually deleted via SQL. Country names/metadata changes will be updated automatically.
 
 ## Important Invariants
 - **When adding a site to browser check**: also remove it from `MONITOR_NAME_TO_COUNTRY_CODE` in `uptimerobot-sync.js` — otherwise UptimeRobot sync overwrites browser check results at :30
@@ -66,6 +74,6 @@ Iran and others — confirmed actually down, not a monitoring configuration issu
 - The timing gap is why `UPTIMEROBOT_ONLY_HOSTS` is necessary — without it, the :00 fetch checker overwrites the :30 UptimeRobot result
 
 ## Supabase Notes
-- `max_rows` API setting: 3000 (required for 196 sites × 12 weeks history)
+- `max_rows` API setting: 3000 (required for 198 sites × 12 weeks history)
 - `notes` column on `nso_sites` is purely cosmetic, has no effect on checks
 - Sites currently up have had their notes cleared; only genuinely problematic sites have notes
