@@ -25,7 +25,8 @@ const MONITOR_NAME_TO_COUNTRY_CODE = {
   // Afghanistan — now handled by SSL bypass in fetch checker
   'Angola': 'AGO',
   // Armenia, Bosnia, Guyana, Kosovo, Kuwait, Portugal, Romania,
-  // Algeria, Antigua & Barbuda, Senegal, Solomon Islands, Vanuatu — now handled by Playwright browser check
+  // Antigua & Barbuda, Senegal, Solomon Islands, Vanuatu — now handled by Playwright browser check
+  'Algeria': 'DZA',
   'Iran': 'IRN',
   'San Marino': 'SMR',
   'Syria': 'SYR',

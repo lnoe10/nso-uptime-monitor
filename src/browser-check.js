@@ -16,7 +16,6 @@ const BROWSER_CHECK_HOSTS = new Set([
   'www.csb.gov.kw',         // Kuwait - bot protection
   'insse.ro',               // Romania - bot protection
   'www.statistics.gov.rw',  // Rwanda - bot protection
-  'www.ons.dz',             // Algeria - bot protection
   'statistics.gov.ag',      // Antigua and Barbuda - bot protection
   'www.ansd.sn',            // Senegal - bot protection
   'www.statistics.gov.sb',  // Solomon Islands - bot protection
@@ -86,7 +85,7 @@ async function recheckWithBrowser(fetchResults, sites) {
       try {
         const startTime = Date.now();
         const response = await page.goto(site.url, {
-          waitUntil: 'domcontentloaded',
+          waitUntil: 'commit',
           timeout: 30000,
         });
         const responseTime = Date.now() - startTime;
