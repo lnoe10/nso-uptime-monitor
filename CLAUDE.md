@@ -32,7 +32,9 @@ Monitors availability of 198 National Statistical Office (NSO) websites worldwid
 2. Run `SUPABASE_URL=xxx SUPABASE_SERVICE_KEY=xxx npm run import-sites` — upserts on URL, safe to run against full CSV
 3. The checker reads from the Supabase `nso_sites` table, not the CSV directly
 
-> **Note:** The import upserts on `url`. If you change a URL in the CSV, the old URL row remains in Supabase and must be manually deleted via SQL. Country names/metadata changes will be updated automatically.
+Credentials are in Supabase dashboard under **Settings → API**. You can also store them in a local `.env` file (gitignored, never commit it), but `import-sites` does not auto-load `.env` — pass credentials inline as above.
+
+> **Warning:** The import upserts on `url` after stripping trailing slashes. If you change a URL in the CSV, the old URL row remains in Supabase and must be manually deleted via SQL. Changing a URL without cleaning up the old row creates a duplicate, which will cause the dashboard to show stale history for the old URL alongside the new one. Country names/metadata changes (no URL change) update automatically.
 
 ## Important Invariants
 - **When adding a site to browser check**: also remove it from `MONITOR_NAME_TO_COUNTRY_CODE` in `uptimerobot-sync.js` — otherwise UptimeRobot sync overwrites browser check results at :30
@@ -46,13 +48,18 @@ In `src/browser-check.js` → `BROWSER_CHECK_HOSTS`:
 - Armenia (`www.armstat.am`), Kosovo (`ask.rks-gov.net`), Kuwait (`www.csb.gov.kw`)
 - Rwanda (`www.statistics.gov.rw`), Antigua & Barbuda (`statistics.gov.ag`)
 - Senegal (`www.ansd.sn`), Solomon Islands (`www.statistics.gov.sb`), Vanuatu (`vbos.gov.vu`)
-- Angola (`www.ine.gov.ao`), Cook Islands (`stats.gov.ck`), Uganda (`www.ubos.org`)
+- Bangladesh (`www.bbs.gov.bd`), Cook Islands (`stats.gov.ck`), Uganda (`www.ubos.org`)
 - Russia (`rosstat.gov.ru`) — also has SSL bypass in fetch checker
+- San Marino (`www.statistica.sm`)
 
 ## UptimeRobot-Only Sites (skip DB insert in fetch checker)
 In `src/checker.js` → `UPTIMEROBOT_ONLY_HOSTS`:
 - **Algeria** (`www.ons.dz`) — returns HTTP 500 to headless browsers
-- **Romania** (`insse.ro`) — drops connections from all datacenter IPs (Cloudflare challenge); has a note in the database: "Site likely up but blocks all external monitoring, perform manual check"
+- **Romania** (`insse.ro`) — drops connections from all datacenter IPs; UptimeRobot also fails (likely HEAD vs GET issue — may be fixed by upgrading to UptimeRobot paid plan to enable GET monitoring); has a database note
+
+## Sites That Block All External Monitoring
+These are confirmed up in a real browser but unreachable from all datacenter IPs including UptimeRobot. They show as down in the dashboard with a database note explaining why:
+- **Angola** (`www.ine.gov.ao`) — 405 error on UptimeRobot (HEAD not supported), also fails browser check from GitHub Actions IPs. May be fixable with UptimeRobot paid GET monitoring.
 
 ## SSL Bypass Sites
 In `src/checker.js` → `SSL_BYPASS_HOSTS` (fetch checker uses `rejectUnauthorized: false`):
