@@ -19,7 +19,7 @@ const BROWSER_CHECK_HOSTS = new Set([
   'www.ansd.sn',            // Senegal - bot protection
   'www.statistics.gov.sb',  // Solomon Islands - bot protection
   'vbos.gov.vu',            // Vanuatu - bot protection
-  'www.ine.gov.ao',         // Angola - bot protection
+
   'stats.gov.ck',           // Cook Islands - bot protection
   'www.ubos.org',           // Uganda - slow load, bot protection
   'rosstat.gov.ru',         // Russia - SSL cert issue + bot protection
