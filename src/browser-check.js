@@ -23,6 +23,8 @@ const BROWSER_CHECK_HOSTS = new Set([
   'stats.gov.ck',           // Cook Islands - bot protection
   'www.ubos.org',           // Uganda - slow load, bot protection
   'rosstat.gov.ru',         // Russia - SSL cert issue + bot protection
+  'www.bbs.gov.bd',         // Bangladesh - bot protection
+  'www.statistica.sm',      // San Marino - bot protection
 ]);
 
 /**
