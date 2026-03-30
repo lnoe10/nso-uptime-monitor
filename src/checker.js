@@ -47,7 +47,6 @@ const SSL_BYPASS_HOSTS = new Set([
 
 // Hosts monitored exclusively by UptimeRobot — skip DB insert to avoid overwriting their results
 const UPTIMEROBOT_ONLY_HOSTS = new Set([
-  'www.ons.dz',  // Algeria - returns HTTP 500 to headless browsers
   'insse.ro',    // Romania - drops connections from GitHub's IP range
 ]);
 

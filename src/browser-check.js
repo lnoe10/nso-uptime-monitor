@@ -25,6 +25,11 @@ const BROWSER_CHECK_HOSTS = new Set([
   'rosstat.gov.ru',         // Russia - SSL cert issue + bot protection
   'www.bbs.gov.bd',         // Bangladesh - bot protection
   'www.statistica.sm',      // San Marino - bot protection
+  'www.ons.dz',             // Algeria - bot protection
+  'www.insee.fr',           // France - bot protection
+  'www.mospi.gov.in',       // India - bot protection
+  'kostat.go.kr',           // South Korea - bot protection
+  'www.dosm.gov.my',        // Malaysia - bot protection
 ]);
 
 /**

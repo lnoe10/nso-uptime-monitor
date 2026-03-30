@@ -26,7 +26,7 @@ const MONITOR_NAME_TO_COUNTRY_CODE = {
   'Angola': 'AGO',
   // Armenia, Bosnia, Guyana, Kosovo, Kuwait, Portugal, Romania,
   // Antigua & Barbuda, Senegal, Solomon Islands, Vanuatu — now handled by Playwright browser check
-  'Algeria': 'DZA',
+  // Algeria — now handled by Playwright browser check
   'Romania': 'ROU',
   'Iran': 'IRN',
   // San Marino — now handled by Playwright browser check
