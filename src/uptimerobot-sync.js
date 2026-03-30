@@ -29,7 +29,7 @@ const MONITOR_NAME_TO_COUNTRY_CODE = {
   'Algeria': 'DZA',
   'Romania': 'ROU',
   'Iran': 'IRN',
-  'San Marino': 'SMR',
+  // San Marino — now handled by Playwright browser check
   'Syria': 'SYR',
   'Ukraine': 'UKR',
   'China': 'CHN',
