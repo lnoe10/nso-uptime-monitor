@@ -128,7 +128,6 @@ async function recheckWithBrowser(fetchResults, sites) {
           check_type: 'scheduled',
         };
       } catch (err) {
-        const responseTime = Date.now();
         console.log(`  ✗ ${site.country} — Browser error: ${err.message}`);
 
         fetchResults[resultIndex] = {

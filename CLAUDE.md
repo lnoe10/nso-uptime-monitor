@@ -42,7 +42,7 @@ Credentials are in Supabase dashboard under **Settings → API**. You can also s
 - **`package-lock.json` must be committed** when changing dependencies — `npm ci` in CI requires it to be in sync
 - **`gh` CLI is not installed locally** — workflow triggers must be done via GitHub UI
 
-## Current Browser Check Sites (15 sites)
+## Current Browser Check Sites (21 sites)
 In `src/browser-check.js` → `BROWSER_CHECK_HOSTS`:
 - Bosnia (`bhas.gov.ba`), Portugal (`www.ine.pt`), Guyana (`statisticsguyana.gov.gy`)
 - Armenia (`www.armstat.am`), Kosovo (`ask.rks-gov.net`), Kuwait (`www.csb.gov.kw`)
@@ -51,10 +51,11 @@ In `src/browser-check.js` → `BROWSER_CHECK_HOSTS`:
 - Bangladesh (`www.bbs.gov.bd`), Cook Islands (`stats.gov.ck`), Uganda (`www.ubos.org`)
 - Russia (`rosstat.gov.ru`) — also has SSL bypass in fetch checker
 - San Marino (`www.statistica.sm`)
+- Algeria (`www.ons.dz`), France (`www.insee.fr`), India (`www.mospi.gov.in`)
+- South Korea (`kostat.go.kr`), Malaysia (`www.dosm.gov.my`)
 
 ## UptimeRobot-Only Sites (skip DB insert in fetch checker)
 In `src/checker.js` → `UPTIMEROBOT_ONLY_HOSTS`:
-- **Algeria** (`www.ons.dz`) — returns HTTP 500 to headless browsers
 - **Romania** (`insse.ro`) — drops connections from all datacenter IPs; UptimeRobot also fails (likely HEAD vs GET issue — may be fixed by upgrading to UptimeRobot paid plan to enable GET monitoring); has a database note
 
 ## Sites That Block All External Monitoring
