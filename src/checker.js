@@ -49,7 +49,8 @@ const SSL_BYPASS_HOSTS = new Set([
 const UPTIMEROBOT_ONLY_HOSTS = new Set([
   'insse.ro',    // Romania - drops connections from GitHub's IP range
   'www.insee.fr',    // France - blocks GitHub Actions IPs
-  'www.mospi.gov.in', // India - blocks GitHub Actions IPs
+  'www.mospi.gov.in',    // India - blocks GitHub Actions IPs
+  'niuestatistics.nu',   // Niue - blocks GitHub Actions IPs
 ]);
 
 const insecureDispatcher = new Agent({

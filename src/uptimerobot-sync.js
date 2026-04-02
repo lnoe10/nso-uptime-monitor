@@ -29,6 +29,7 @@ const MONITOR_NAME_TO_COUNTRY_CODE = {
   // Algeria — now handled by Playwright browser check
   'France': 'FRA',
   'India': 'IND',
+  'Niue': 'NIU',
   'Romania': 'ROU',
   'Iran': 'IRN',
   // San Marino — now handled by Playwright browser check

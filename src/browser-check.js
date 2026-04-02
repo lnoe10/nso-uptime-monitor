@@ -28,7 +28,6 @@ const BROWSER_CHECK_HOSTS = new Set([
   'www.ons.dz',             // Algeria - bot protection
   'kostat.go.kr',           // South Korea - bot protection
   'www.dosm.gov.my',        // Malaysia - bot protection
-  'niuestatistics.nu',      // Niue - bot protection
 ]);
 
 /**
