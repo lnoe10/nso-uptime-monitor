@@ -27,6 +27,8 @@ const MONITOR_NAME_TO_COUNTRY_CODE = {
   // Armenia, Bosnia, Guyana, Kosovo, Kuwait, Portugal, Romania,
   // Antigua & Barbuda, Senegal, Solomon Islands, Vanuatu — now handled by Playwright browser check
   // Algeria — now handled by Playwright browser check
+  'France': 'FRA',
+  'India': 'IND',
   'Romania': 'ROU',
   'Iran': 'IRN',
   // San Marino — now handled by Playwright browser check

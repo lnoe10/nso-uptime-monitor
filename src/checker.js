@@ -48,6 +48,8 @@ const SSL_BYPASS_HOSTS = new Set([
 // Hosts monitored exclusively by UptimeRobot — skip DB insert to avoid overwriting their results
 const UPTIMEROBOT_ONLY_HOSTS = new Set([
   'insse.ro',    // Romania - drops connections from GitHub's IP range
+  'www.insee.fr',    // France - blocks GitHub Actions IPs
+  'www.mospi.gov.in', // India - blocks GitHub Actions IPs
 ]);
 
 const insecureDispatcher = new Agent({
