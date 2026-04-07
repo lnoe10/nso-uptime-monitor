@@ -117,7 +117,7 @@ const StatCard = ({ label, value, color }) => (
 
 const INCOME_GROUP_ORDER = ['High income', 'Upper middle income', 'Lower middle income', 'Low income', 'Unclassified'];
 
-const AggregateTable = ({ title, data, expanded, onToggle }) => (
+const AggregateTable = ({ title, data }) => (
   <div style={{
     flex: '1',
     backgroundColor: colors.white,
@@ -126,25 +126,16 @@ const AggregateTable = ({ title, data, expanded, onToggle }) => (
     overflow: 'hidden',
     minWidth: '280px',
   }}>
-    <div
-      onClick={onToggle}
-      style={{
-        padding: '12px 16px',
-        backgroundColor: colors.primary,
-        color: colors.white,
-        fontSize: '13px',
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        letterSpacing: '0.5px',
-        cursor: 'pointer',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-      <span>{title}</span>
-      <span style={{ fontSize: '16px', transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>&#9662;</span>
-    </div>
-    {expanded && data.map((row, idx) => (
+    <div style={{
+      padding: '12px 16px',
+      backgroundColor: colors.primary,
+      color: colors.white,
+      fontSize: '13px',
+      fontWeight: '600',
+      textTransform: 'uppercase',
+      letterSpacing: '0.5px',
+    }}>{title}</div>
+    {data.map((row, idx) => (
       <div key={row.label} style={{
         display: 'grid',
         gridTemplateColumns: '1fr 60px 80px',
@@ -175,8 +166,7 @@ export default function App() {
   const [regionFilter, setRegionFilter] = useState('all');
   const [incomeFilter, setIncomeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [regionExpanded, setRegionExpanded] = useState(false);
-  const [incomeExpanded, setIncomeExpanded] = useState(false);
+  const [aggregatesExpanded, setAggregatesExpanded] = useState(false);
   const [sortBy, setSortBy] = useState('country');
   const [sortOrder, setSortOrder] = useState('asc');
 
@@ -328,10 +318,27 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
       {/* Aggregate Summaries */}
       {!loading && !error && (
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 32px 24px' }}>
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-            <AggregateTable title="7-Day Avg Uptime by Region" data={aggregates.byRegion} expanded={regionExpanded} onToggle={() => setRegionExpanded(e => !e)} />
-            <AggregateTable title="7-Day Avg Uptime by Income Group" data={aggregates.byIncome} expanded={incomeExpanded} onToggle={() => setIncomeExpanded(e => !e)} />
+          <div
+            onClick={() => setAggregatesExpanded(e => !e)}
+            style={{
+              backgroundColor: colors.white,
+              borderRadius: aggregatesExpanded ? '8px 8px 0 0' : '8px',
+              padding: '12px 20px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: colors.gray700 }}>Uptime Summaries by Region & Income Group</span>
+            <span style={{ fontSize: '16px', color: colors.gray500, transition: 'transform 0.2s', transform: aggregatesExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>&#9662;</span>
           </div>
+          {aggregatesExpanded && (
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', padding: '16px', backgroundColor: colors.gray50, borderRadius: '0 0 8px 8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <AggregateTable title="7-Day Avg Uptime by Region" data={aggregates.byRegion} />
+              <AggregateTable title="7-Day Avg Uptime by Income Group" data={aggregates.byIncome} />
+            </div>
+          )}
         </div>
       )}
 
