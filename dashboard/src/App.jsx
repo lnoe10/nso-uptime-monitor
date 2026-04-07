@@ -117,7 +117,7 @@ const StatCard = ({ label, value, color }) => (
 
 const INCOME_GROUP_ORDER = ['High income', 'Upper middle income', 'Lower middle income', 'Low income', 'Unclassified'];
 
-const AggregateTable = ({ title, data }) => (
+const AggregateTable = ({ title, data, expanded, onToggle }) => (
   <div style={{
     flex: '1',
     backgroundColor: colors.white,
@@ -126,16 +126,25 @@ const AggregateTable = ({ title, data }) => (
     overflow: 'hidden',
     minWidth: '280px',
   }}>
-    <div style={{
-      padding: '12px 16px',
-      backgroundColor: colors.primary,
-      color: colors.white,
-      fontSize: '13px',
-      fontWeight: '600',
-      textTransform: 'uppercase',
-      letterSpacing: '0.5px',
-    }}>{title}</div>
-    {data.map((row, idx) => (
+    <div
+      onClick={onToggle}
+      style={{
+        padding: '12px 16px',
+        backgroundColor: colors.primary,
+        color: colors.white,
+        fontSize: '13px',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        cursor: 'pointer',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
+      <span>{title}</span>
+      <span style={{ fontSize: '16px', transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>&#9662;</span>
+    </div>
+    {expanded && data.map((row, idx) => (
       <div key={row.label} style={{
         display: 'grid',
         gridTemplateColumns: '1fr 60px 80px',
@@ -148,7 +157,7 @@ const AggregateTable = ({ title, data }) => (
       }}>
         <div style={{ fontWeight: '500', color: colors.gray700 }}>{row.label}</div>
         <div style={{ textAlign: 'right', color: colors.gray500 }}>{row.count} sites</div>
-        <div style={{ textAlign: 'right', fontWeight: '600', color: getUptimeColor(row.avgUptime) }}>
+        <div style={{ textAlign: 'right', fontWeight: '600', fontVariantNumeric: 'tabular-nums', color: getUptimeColor(row.avgUptime) }}>
           {row.avgUptime !== null ? `${row.avgUptime.toFixed(1)}%` : '—'}
         </div>
       </div>
@@ -164,7 +173,10 @@ export default function App() {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [regionFilter, setRegionFilter] = useState('all');
+  const [incomeFilter, setIncomeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [regionExpanded, setRegionExpanded] = useState(false);
+  const [incomeExpanded, setIncomeExpanded] = useState(false);
   const [sortBy, setSortBy] = useState('country');
   const [sortOrder, setSortOrder] = useState('asc');
 
@@ -196,13 +208,18 @@ export default function App() {
   useEffect(() => { fetchData(); const interval = setInterval(fetchData, 5 * 60 * 1000); return () => clearInterval(interval); }, []);
 
   const regions = useMemo(() => [...new Set(sites.map(s => s.region))].filter(Boolean).sort(), [sites]);
+  const incomeGroups = useMemo(() => {
+    const groups = [...new Set(sites.map(s => s.income_group).filter(Boolean))];
+    return INCOME_GROUP_ORDER.filter(g => groups.includes(g)).concat(groups.includes(undefined) || sites.some(s => !s.income_group) ? ['Unclassified'] : []);
+  }, [sites]);
 
   const filteredData = useMemo(() => {
     return sites.filter(site => {
       const matchesSearch = site.country?.toLowerCase().includes(searchTerm.toLowerCase()) || site.organization?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesRegion = regionFilter === 'all' || site.region === regionFilter;
+      const matchesIncome = incomeFilter === 'all' || (incomeFilter === 'Unclassified' ? !site.income_group : site.income_group === incomeFilter);
       const matchesStatus = statusFilter === 'all' || (statusFilter === 'up' && site.current_status === true) || (statusFilter === 'down' && site.current_status === false) || (statusFilter === 'unknown' && site.current_status === null);
-      return matchesSearch && matchesRegion && matchesStatus;
+      return matchesSearch && matchesRegion && matchesIncome && matchesStatus;
     }).sort((a, b) => {
       let cmp = 0;
       if (sortBy === 'country') cmp = (a.country || '').localeCompare(b.country || '');
@@ -210,7 +227,7 @@ export default function App() {
       else if (sortBy === 'uptime') cmp = (b.uptime_7d || 0) - (a.uptime_7d || 0);
       return sortOrder === 'asc' ? cmp : -cmp;
     });
-  }, [sites, searchTerm, regionFilter, statusFilter, sortBy, sortOrder]);
+  }, [sites, searchTerm, regionFilter, incomeFilter, statusFilter, sortBy, sortOrder]);
 
   const stats = useMemo(() => {
     const total = sites.length;
@@ -312,8 +329,8 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
       {!loading && !error && (
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 32px 24px' }}>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-            <AggregateTable title="7-Day Avg Uptime by Region" data={aggregates.byRegion} />
-            <AggregateTable title="7-Day Avg Uptime by Income Group" data={aggregates.byIncome} />
+            <AggregateTable title="7-Day Avg Uptime by Region" data={aggregates.byRegion} expanded={regionExpanded} onToggle={() => setRegionExpanded(e => !e)} />
+            <AggregateTable title="7-Day Avg Uptime by Income Group" data={aggregates.byIncome} expanded={incomeExpanded} onToggle={() => setIncomeExpanded(e => !e)} />
           </div>
         </div>
       )}
@@ -360,6 +377,22 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
           >
             <option value="all">All Regions</option>
             {regions.map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+
+          <select
+            value={incomeFilter}
+            onChange={(e) => setIncomeFilter(e.target.value)}
+            style={{
+              padding: '10px 14px',
+              fontSize: '14px',
+              border: `1px solid ${colors.gray200}`,
+              borderRadius: '6px',
+              backgroundColor: colors.white,
+              cursor: 'pointer',
+            }}
+          >
+            <option value="all">All Income Groups</option>
+            {incomeGroups.map(g => <option key={g} value={g}>{g}</option>)}
           </select>
 
           <select
