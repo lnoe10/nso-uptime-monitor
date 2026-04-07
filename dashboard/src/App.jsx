@@ -321,7 +321,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
           <div
             onClick={() => setAggregatesExpanded(e => !e)}
             style={{
-              backgroundColor: colors.white,
+              backgroundColor: '#54C0DD',
               borderRadius: aggregatesExpanded ? '8px 8px 0 0' : '8px',
               padding: '12px 20px',
               boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
@@ -330,8 +330,8 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <span style={{ fontSize: '14px', fontWeight: '600', color: colors.gray700 }}>Uptime Summaries by Region & Income Group</span>
-            <span style={{ fontSize: '16px', color: colors.gray500, transition: 'transform 0.2s', transform: aggregatesExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>&#9662;</span>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: '#fff' }}>Uptime Summaries by Region & Income Group</span>
+            <span style={{ fontSize: '16px', color: '#fff', transition: 'transform 0.2s', transform: aggregatesExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>&#9662;</span>
           </div>
           {aggregatesExpanded && (
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', padding: '16px', backgroundColor: colors.gray50, borderRadius: '0 0 8px 8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
@@ -562,7 +562,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
             Checks run hourly via automated monitoring.
           </p>
           <p style={{ margin: 0, color: colors.gray500, fontSize: '13px' }}>
-            Data source: <a href="https://opendatawatch.com" style={{ color: colors.primary }}>Open Data Watch</a>
+            Data Source for Website Addresses: <a href="https://opendatawatch.com" style={{ color: colors.primary }}>Open Data Watch</a> and <a href="https://iaos-isi.org/national-statistical-offices/" style={{ color: colors.primary }}>International Association for Official Statistics (IAOS)</a>
           </p>
         </div>
       </main>
