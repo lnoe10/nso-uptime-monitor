@@ -67,6 +67,7 @@ async function importSites(csvPath) {
       region: normalizeRegion(row.region),
       organization: row.organization?.trim() || 'National Statistical Office',
       url: url,
+      income_group: row.income_group?.trim() || null,
       is_active: true,
     });
   });

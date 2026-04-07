@@ -115,6 +115,47 @@ const StatCard = ({ label, value, color }) => (
   </div>
 );
 
+const INCOME_GROUP_ORDER = ['High income', 'Upper middle income', 'Lower middle income', 'Low income', 'Unclassified'];
+
+const AggregateTable = ({ title, data }) => (
+  <div style={{
+    flex: '1',
+    backgroundColor: colors.white,
+    borderRadius: '8px',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+    overflow: 'hidden',
+    minWidth: '280px',
+  }}>
+    <div style={{
+      padding: '12px 16px',
+      backgroundColor: colors.primary,
+      color: colors.white,
+      fontSize: '13px',
+      fontWeight: '600',
+      textTransform: 'uppercase',
+      letterSpacing: '0.5px',
+    }}>{title}</div>
+    {data.map((row, idx) => (
+      <div key={row.label} style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 60px 80px',
+        gap: '8px',
+        padding: '10px 16px',
+        borderBottom: idx < data.length - 1 ? `1px solid ${colors.gray100}` : 'none',
+        backgroundColor: idx % 2 === 0 ? colors.white : colors.gray50,
+        alignItems: 'center',
+        fontSize: '13px',
+      }}>
+        <div style={{ fontWeight: '500', color: colors.gray700 }}>{row.label}</div>
+        <div style={{ textAlign: 'right', color: colors.gray500 }}>{row.count} sites</div>
+        <div style={{ textAlign: 'right', fontWeight: '600', color: getUptimeColor(row.avgUptime) }}>
+          {row.avgUptime !== null ? `${row.avgUptime.toFixed(1)}%` : '—'}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 export default function App() {
   const [sites, setSites] = useState([]);
   const [weeklyHistory, setWeeklyHistory] = useState({});
@@ -133,7 +174,7 @@ export default function App() {
     try {
       const { data: statusData, error: statusError } = await supabase
         .from('site_status_detailed')
-        .select('id, country, country_code, region, organization, url, current_status, last_checked, uptime_7d, uptime_24h, notes')
+        .select('id, country, country_code, region, organization, url, current_status, last_checked, uptime_7d, uptime_24h, notes, income_group')
         .order('country');
       if (statusError) throw statusError;
       const { data: historyData, error: historyError } = await supabase.rpc('get_weekly_history', { weeks_back: 12 }).limit(3000);
@@ -177,6 +218,35 @@ export default function App() {
     const down = sites.filter(s => s.current_status === false).length;
     const avgUptime = total > 0 ? sites.reduce((acc, s) => acc + (parseFloat(s.uptime_7d) || 0), 0) / total : 0;
     return { total, up, down, avgUptime };
+  }, [sites]);
+
+  const aggregates = useMemo(() => {
+    const calcGroup = (groupFn, order) => {
+      const groups = {};
+      sites.forEach(s => {
+        const key = groupFn(s) || 'Unclassified';
+        if (!groups[key]) groups[key] = { uptimes: [], count: 0 };
+        groups[key].count++;
+        if (s.uptime_7d !== null && s.uptime_7d !== undefined) {
+          groups[key].uptimes.push(parseFloat(s.uptime_7d));
+        }
+      });
+      const entries = Object.entries(groups).map(([label, g]) => ({
+        label,
+        count: g.count,
+        avgUptime: g.uptimes.length > 0 ? g.uptimes.reduce((a, b) => a + b, 0) / g.uptimes.length : null,
+      }));
+      if (order) {
+        entries.sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label));
+      } else {
+        entries.sort((a, b) => a.label.localeCompare(b.label));
+      }
+      return entries;
+    };
+    return {
+      byRegion: calcGroup(s => s.region),
+      byIncome: calcGroup(s => s.income_group, INCOME_GROUP_ORDER),
+    };
   }, [sites]);
 
   const downloadCSV = () => {
@@ -237,6 +307,16 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
           <StatCard label="Avg Uptime (7d)" value={`${stats.avgUptime.toFixed(1)}%`} color={getUptimeColor(stats.avgUptime)} />
         </div>
       </div>
+
+      {/* Aggregate Summaries */}
+      {!loading && !error && (
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 32px 24px' }}>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            <AggregateTable title="7-Day Avg Uptime by Region" data={aggregates.byRegion} />
+            <AggregateTable title="7-Day Avg Uptime by Income Group" data={aggregates.byIncome} />
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 32px 24px' }}>
