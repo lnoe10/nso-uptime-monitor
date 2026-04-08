@@ -73,11 +73,10 @@ const logsDir = path.join(__dirname, '..', 'logs');
  */
 async function checkSite(site, retryCount = 0) {
   const startTime = Date.now();
-  
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), config.checkTimeout);
+
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), config.checkTimeout);
-    
     // Use HEAD request first (faster), fall back to GET if needed
     let response;
     try {
@@ -108,8 +107,6 @@ async function checkSite(site, retryCount = 0) {
         throw headError;
       }
     }
-    
-    clearTimeout(timeout);
     
     const responseTime = Date.now() - startTime;
     
@@ -145,14 +142,14 @@ async function checkSite(site, retryCount = 0) {
     
   } catch (error) {
     const responseTime = Date.now() - startTime;
-    
+
     // Retry logic for transient errors
     if (retryCount < config.maxRetries && isRetryableError(error)) {
       console.log(`  ⟳ Retrying ${site.country} (${retryCount + 1}/${config.maxRetries})...`);
       await sleep(config.retryDelay);
       return checkSite(site, retryCount + 1);
     }
-    
+
     return {
       site_id: site.id,
       status_code: null,
@@ -161,6 +158,8 @@ async function checkSite(site, retryCount = 0) {
       error_message: formatError(error),
       check_type: 'scheduled',
     };
+  } finally {
+    clearTimeout(timeout);
   }
 }
 

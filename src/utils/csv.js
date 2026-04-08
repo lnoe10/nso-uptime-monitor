@@ -15,9 +15,16 @@ function parseCSV(content) {
     let current = '';
     let inQuotes = false;
 
-    for (const char of line) {
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
       if (char === '"') {
-        inQuotes = !inQuotes;
+        if (inQuotes && line[j + 1] === '"') {
+          // Escaped quote ("") — emit a literal quote
+          current += '"';
+          j++;
+        } else {
+          inQuotes = !inQuotes;
+        }
       } else if (char === ',' && !inQuotes) {
         values.push(current.trim().replace(/^"|"$/g, ''));
         current = '';
