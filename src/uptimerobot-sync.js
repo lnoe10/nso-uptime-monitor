@@ -153,6 +153,22 @@ async function syncUptimeRobotData() {
 
     // Insert results into Supabase
     if (results.length > 0) {
+      // Remove any existing UptimeRobot checks for these sites in the current hour
+      // (prevents duplicates on re-runs or manual triggers)
+      const siteIds = results.map(r => r.site_id);
+      const hourStart = new Date();
+      hourStart.setMinutes(0, 0, 0);
+      const { error: deleteError } = await supabase
+        .from('uptime_checks')
+        .delete()
+        .in('site_id', siteIds)
+        .eq('check_type', 'uptimerobot')
+        .gte('checked_at', hourStart.toISOString());
+
+      if (deleteError) {
+        console.warn(`Warning: failed to clear previous results: ${deleteError.message}`);
+      }
+
       console.log(`\nSaving ${results.length} results to database...`);
       const { error: insertError } = await supabase
         .from('uptime_checks')

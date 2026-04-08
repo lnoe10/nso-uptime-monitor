@@ -334,6 +334,22 @@ async function main() {
     // Re-check bot-protected sites with headless browser
     const finalResults = await recheckWithBrowser(results, sites);
 
+    // Remove any existing scheduled checks for these sites in the current hour
+    // (prevents duplicates on re-runs or manual triggers)
+    const siteIds = finalResults.map(r => r.site_id);
+    const hourStart = new Date();
+    hourStart.setMinutes(0, 0, 0);
+    const { error: deleteError } = await supabase
+      .from('uptime_checks')
+      .delete()
+      .in('site_id', siteIds)
+      .eq('check_type', 'scheduled')
+      .gte('checked_at', hourStart.toISOString());
+
+    if (deleteError) {
+      console.warn(`Warning: failed to clear previous results: ${deleteError.message}`);
+    }
+
     // Insert results into database
     console.log('Saving results to database...');
     const { error: insertError } = await supabase
