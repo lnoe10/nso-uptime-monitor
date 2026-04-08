@@ -257,10 +257,11 @@ export default function App() {
   }, [sites]);
 
   const downloadCSV = () => {
-    const headers = ['Country', 'Region', 'Organization', 'URL', 'Status', 'Uptime 7d (%)', 'Notes'];
+    const headers = ['Country', 'Region', 'Income Group', 'Organization', 'URL', 'Status', 'Uptime 7d (%)', 'Notes'];
     const rows = filteredData.map(site => [
       site.country,
       site.region,
+      site.income_group || '',
       site.organization,
       site.url,
       site.current_status === true ? 'Up' : site.current_status === false ? 'Down' : 'Unknown',
