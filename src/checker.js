@@ -320,30 +320,33 @@ async function main() {
       browserSites.forEach(s => console.log(`  → ${s.country}: ${s.url}`));
     }
 
+    // Filter out sites handled exclusively by UptimeRobot before checking
+    const sitesToCheck = sites.filter(s => {
+      try { return !UPTIMEROBOT_ONLY_HOSTS.has(new URL(s.url).hostname); } catch { return true; }
+    });
+    const skipped = sites.length - sitesToCheck.length;
+    if (skipped > 0) {
+      console.log(`\nSkipping ${skipped} UptimeRobot-only sites.`);
+    }
+
     // Run checks
-    const results = await checkAllSites(sites);
+    const results = await checkAllSites(sitesToCheck);
     
     // Re-check bot-protected sites with headless browser
     const finalResults = await recheckWithBrowser(results, sites);
-
-    // Exclude sites handled exclusively by UptimeRobot
-    const resultsToInsert = finalResults.filter(r => {
-      const site = sites.find(s => s.id === r.site_id);
-      try { return !UPTIMEROBOT_ONLY_HOSTS.has(new URL(site?.url).hostname); } catch { return true; }
-    });
 
     // Insert results into database
     console.log('Saving results to database...');
     const { error: insertError } = await supabase
       .from('uptime_checks')
-      .insert(resultsToInsert);
+      .insert(finalResults);
 
     if (insertError) {
       throw new Error(`Failed to save results: ${insertError.message}`);
     }
 
     // Generate and display summary
-    const summary = generateSummary(resultsToInsert, sites);
+    const summary = generateSummary(finalResults, sitesToCheck);
     
     console.log('\n' + '═'.repeat(60));
     console.log('SUMMARY');

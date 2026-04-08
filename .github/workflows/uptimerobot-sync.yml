@@ -8,6 +8,11 @@ on:
   # Allow manual trigger
   workflow_dispatch:
 
+# Prevent concurrent runs
+concurrency:
+  group: uptimerobot-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
     name: Sync UptimeRobot Data
